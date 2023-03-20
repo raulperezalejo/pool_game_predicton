@@ -39,45 +39,42 @@ while cap.isOpened():
     frame_count += 1
     success, frame = cap.read()
 
-    frame_processed = pre_processing(frame)
-
-    frame_countours, cnt_found = find_contours(frame, frame_processed, minArea=1000)
-
-    # frame_stacked = cvzone.stackImages([frame_processed], 1, 2)
-
     if frame_count == 44:
+        frame_processed = pre_processing(frame, 96, 75)
+        frame_countours, cnt_found = find_contours(frame, frame_processed, minArea=1000)
+
         # Contour filtering
         cnt_found = [d for d in cnt_found if 300 < d['bbox'][0] < 600 and d['bbox'][1] < 800]
 
-        while True:
-            key2 = cv2.waitKey(1) or 0xff
+        # Stick
+        xs, ys, w, h = cnt_found[0]['bbox']
+        xs_center, ys_center = xs + (w // 2), ys + (h // 2)
+        # Cue
+        xc, yc, w, h = cnt_found[1]['bbox']
+        xc_center, yc_center = xc + (w // 2), yc + (h // 2)
 
-            # Stick
-            xs, ys, w, h = cnt_found[0]['bbox']
-            xs_center, ys_center = xs + (w // 2), ys + (h // 2)
-            # Cue
-            xc, yc, w, h = cnt_found[1]['bbox']
-            xc_center, yc_center = xc + (w // 2), yc + (h // 2)
-            # ghost ball trajectory
-            x3, y3 = calculate_projection(frame_countours, xs_center, ys_center, xc_center, yc_center, 7)
+        # Ghost ball trajectory
+        x3, y3 = calculate_projection(frame, xs_center, ys_center, xc_center, yc_center, 7)
 
-            # Ball
-            xb, yb, w, h = cnt_found[3]['bbox']
-            xb_center, yb_center = xb + (w // 2), yb + (h // 2)
-            # Ball trajectory
-            calculate_projection(frame_countours, x3, y3, xb_center, yb_center, 10)
+        # Ball
+        xb, yb, w, h = cnt_found[3]['bbox']
+        xb_center, yb_center = xb + (w // 2), yb + (h // 2)
 
-            text_result(frame_countours, 'IN', GREEN)
+        # Ball trajectory
+        calculate_projection(frame, x3, y3, xb_center, yb_center, 10)
 
-            cv2.imshow('frame', frame_countours)
+        text_result(frame, 'IN', GREEN)
 
-            if key2 == ord('c'):
-                break
+        cv2.imshow('frame', frame)
+
+        cv2.waitKey(1000)
 
     ######################
 
     if frame_count == 100:
-        # border line
+        frame_processed = pre_processing(frame, 96, 75)
+        frame_countours, cnt_found = find_contours(frame, frame_processed, minArea=1000)
+
         b_x1, b_y1, b_x2, b_y2 = 500, 800, 900, 800
         cv2.line(frame_countours, (b_x1, b_y1), (b_x2, b_y2), RED, 4)
 
@@ -98,12 +95,12 @@ while cap.isOpened():
 
             # Stick
             xs, ys, w, h = cnt_found[3]['bbox']
-            draw_contour(frame_countours, xs, ys, w, h)
+            # draw_contour(frame_countours, xs, ys, w, h)
             xs_center, ys_center = xs + (w // 2), ys + (h // 2)
 
             # # cue
             xc, yc, w, h = cnt_found[1]['bbox']
-            draw_contour(frame_countours, xc, yc, w, h)
+            # draw_contour(frame_countours, xc, yc, w, h)
             xc_center, yc_center = xc + (w // 2), yc + (h // 2)
             #
             # ghost ball trajectory
@@ -111,7 +108,7 @@ while cap.isOpened():
 
             # ball
             xb, yb, w, h = cnt_found[2]['bbox']
-            draw_contour(frame_countours, xb, yb, w, h)
+            # draw_contour(frame_countours, xb, yb, w, h)
 
             xb_center, yb_center = xb + (w // 2), yb + (h // 2)
 
@@ -145,40 +142,145 @@ while cap.isOpened():
     ######################
 
     if frame_count == 274:
-        cv2.imwrite("frame1.jpg", frame)  # save frame as JPEG file
+        frame_processed = pre_processing(frame, 30, 30)
+        frame_countours, cnt_found = find_contours(frame, frame_processed, minArea=500)
 
-        # border line
-        b_x1, b_y1, b_x2, b_y2 = 400, 200, 800, 800
-        cv2.rectangle(frame_countours, (b_x1, b_y1), (b_x2, b_y2), RED, 4)
+        # Contour filtering
+        cnt_found = [d for d in cnt_found if 400 < d['bbox'][0] < 800 and 200 < d['bbox'][1] < 800]
 
+        # Stick
+        xs, ys, ws, hs = cnt_found[1]['bbox']
+        xs_center, ys_center = xs + (ws // 2), ys + (hs // 2)
+
+        # Cue
+        xc, yc, wc, hc = cnt_found[2]['bbox']
+        xc_center, yc_center = xc + (wc // 2), yc + (hc // 2)
+
+        # Ghost ball trajectory
+        x3, y3 = calculate_projection(frame, xs_center, ys_center, xc_center, yc_center, 12)
+
+        # Ball
+        xb, yb, wb, hb = cnt_found[4]['bbox']
+        xb_center, yb_center = xb + (wb // 2), yb + (hb // 2)
+
+        # Ball trajectory
+        calculate_projection(frame, x3, y3, xb_center, yb_center, 12)
+
+        text_result(frame, 'IN', GREEN)
+
+        cv2.imshow('frame', frame)
+
+        cv2.waitKey(1000)
+
+    ######################
+
+    if frame_count == 369:
+        frame_processed = pre_processing(frame, 30, 30)
+        frame_countours, cnt_found = find_contours(frame, frame_processed, minArea=500)
+
+        # Contour filtering
         cnt_found = [d for d in cnt_found if 400 < d['bbox'][0] < 800 and 200 < d['bbox'][1] < 800]
 
         while True:
             key2 = cv2.waitKey(1) or 0xff
-            # frame_processed = pre_processing(frame)
-            # cv2.circle(frame_countours, (229, 135), 35, BLACK, cv2.FILLED)
-            # cv2.line(frame_countours, (521, 710), (475, 498), RED, 4)
+
+            # Stick
+            # xs, ys, ws, hs = cnt_found[1]['bbox']
+            # xs_center, ys_center = xs + (ws // 2), ys + (hs // 2)
             #
-            print(len(cnt_found))
-            for cnt in cnt_found:
-                x, y, w, h = cnt['bbox']
-                draw_contour(frame_countours, x, y, w, h)
-            # xs, ys, w, h = cnt_found[2]['bbox']
-            # draw_contour(frame_countours, xs, ys, w, h)
+            # # Cue
+            # xc, yc, wc, hc = cnt_found[2]['bbox']
+            # xc_center, yc_center = xc + (wc // 2), yc + (hc // 2)
+            #
+            # # Ghost ball trajectory
+            # x3, y3 = calculate_projection(frame, xs_center, ys_center, xc_center, yc_center, 12)
+            #
+            # # Ball
+            # xb, yb, wb, hb = cnt_found[4]['bbox']
+            # xb_center, yb_center = xb + (wb // 2), yb + (hb // 2)
+            #
+            # # Ball trajectory
+            # calculate_projection(frame, x3, y3, xb_center, yb_center, 12)
+            #
+            # text_result(frame, 'IN', GREEN)
 
-            # # Stick
-            # xs, ys, w, h = cnt_found[3]['bbox']
-            # draw_contour(frame_countours, xs, ys, w, h)
-            # xs_center, ys_center = xs + (w // 2), ys + (h // 2)
+            cv2.imshow('frame', frame)
 
+            if key2 == ord('c'):
+                break
 
-            cv2.imshow('frame', frame_countours)
+    ######################
+
+    if frame_count == 504:
+        frame_processed = pre_processing(frame, 96, 75)
+        frame_countours, cnt_found = find_contours(frame, frame_processed, minArea=500)
+
+        # Contour filtering
+        cnt_found = [d for d in cnt_found if 1100 < d['bbox'][0] < 1800 and 50 < d['bbox'][1] < 800]
+
+        # Stick
+        xs, ys, ws, hs = cnt_found[3]['bbox']
+        xs_center, ys_center = xs + (ws // 2), ys + (hs // 2)
+
+        # Cue
+        xc, yc, wc, hc = cnt_found[6]['bbox']  # 7
+        xc_center, yc_center = xc + (wc // 2), yc + (hc // 2)
+
+        x3, y3 = calculate_projection(frame, xs_center, ys_center, xc_center, yc_center, 23)
+
+        # Ball
+        xb, yb, wb, hb = cnt_found[9]['bbox']  # 4
+        xb_center, yb_center = xb + (wb // 2), yb + (hb // 2)
+
+        calculate_projection(frame, x3, y3, xb_center, yb_center, 34)
+
+        text_result(frame, 'IN', GREEN)
+
+        cv2.imshow('frame', frame)
+
+        cv2.waitKey(1000)
+
+    ######################
+
+    if frame_count == 644:
+        cv2.imwrite('frame644.jpg', frame)
+
+        frame_processed = pre_processing(frame, 30, 30)
+        frame_countours, cnt_found = find_contours(frame, frame_processed, minArea=500)
+
+        # Contour filtering
+        cnt_found = [d for d in cnt_found if 400 < d['bbox'][0] < 800 and 200 < d['bbox'][1] < 800]
+
+        while True:
+            key2 = cv2.waitKey(1) or 0xff
+
+            # Stick
+            # xs, ys, ws, hs = cnt_found[1]['bbox']
+            # xs_center, ys_center = xs + (ws // 2), ys + (hs // 2)
+            #
+            # # Cue
+            # xc, yc, wc, hc = cnt_found[2]['bbox']
+            # xc_center, yc_center = xc + (wc // 2), yc + (hc // 2)
+            #
+            # # Ghost ball trajectory
+            # x3, y3 = calculate_projection(frame, xs_center, ys_center, xc_center, yc_center, 12)
+            #
+            # # Ball
+            # xb, yb, wb, hb = cnt_found[4]['bbox']
+            # xb_center, yb_center = xb + (wb // 2), yb + (hb // 2)
+            #
+            # # Ball trajectory
+            # calculate_projection(frame, x3, y3, xb_center, yb_center, 12)
+            #
+            # text_result(frame, 'IN', GREEN)
+
+            cv2.imshow('frame', frame)
 
             if key2 == ord('c'):
                 break
 
 
-    cv2.imshow('frame', frame_countours)
+    cv2.imshow('frame', frame)
 
     key = cv2.waitKey(1)
     if key == ord('p'):
