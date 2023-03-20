@@ -9,12 +9,12 @@ GREEN = (0, 255, 0)
 BLACK = (0, 0, 0)
 
 
-def pre_processing(frame):
+def pre_processing(frame, threshold1, threshold2):
     frame_processed = cv2.GaussianBlur(frame, (5, 5), 3)
     # threshold_1 = cv2.getTrackbarPos('Threshold1', 'Settings')
     # threshold_2 = cv2.getTrackbarPos('Threshold2', 'Settings')
     # frame_processed = cv2.Canny(frame_processed, threshold_1, threshold_2)
-    frame_processed = cv2.Canny(frame_processed, 96, 75)
+    frame_processed = cv2.Canny(frame_processed, threshold1, threshold2)
     kernel = np.ones((3, 3), np.uint8)
     frame_processed = cv2.dilate(frame_processed, kernel, iterations=1)
     frame_processed = cv2.morphologyEx(frame_processed, cv2.MORPH_CLOSE, kernel)
