@@ -271,8 +271,6 @@ while cap.isOpened():
 
     ######################
     if frame_count == 644:
-        cv2.putText(frame, str(frame_count), (20, 80), cv2.FONT_HERSHEY_SIMPLEX, 3, RED, 3)
-
         frame_processed = pre_processing(frame, 51, 156)
         frame_countours, cnt_found = find_contours(frame, frame_processed, minArea=500)
 
@@ -314,8 +312,6 @@ while cap.isOpened():
     ######################
 
     if frame_count == 762:
-        cv2.putText(frame, str(frame_count), (20, 80), cv2.FONT_HERSHEY_SIMPLEX, 3, RED, 3)
-
         frame_processed = pre_processing(frame, 53, 108, 4)
         frame_countours, cnt_found = find_contours(frame, frame_processed, minArea=500)
 
@@ -357,8 +353,6 @@ while cap.isOpened():
     ######################
 
     if frame_count == 908:
-        cv2.putText(frame, str(frame_count), (20, 80), cv2.FONT_HERSHEY_SIMPLEX, 3, RED, 3)
-
         frame_processed = pre_processing(frame, 88, 132, 5)
         frame_countours, cnt_found = find_contours(frame, frame_processed, minArea=100)
 
@@ -454,8 +448,6 @@ while cap.isOpened():
     ######################
 
     if frame_count == 1163:
-        cv2.putText(frame, str(frame_count), (20, 80), cv2.FONT_HERSHEY_SIMPLEX, 3, RED, 3)
-
         edge_x1, edge_y1, edge_x2, edge_y2 = 270, 800, 1650, 800
         cv2.line(frame, (edge_x1, edge_y1), (edge_x2, edge_y2), YELLOW, 4)
 
