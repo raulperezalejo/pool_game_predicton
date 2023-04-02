@@ -501,18 +501,10 @@ while cap.isOpened():
 
         cv2.waitKey(WAIT_TIME)
 
-    cv2.imshow('frame', frame)
-
-    key = cv2.waitKey(1)
-    if key == ord('p'):
-        while True:
-            key2 = cv2.waitKey(1) or 0xff
-            frame_processed = pre_processing(frame)
-            cv2.imshow('frame', frame_countours)
-
-            if key2 == ord('p'):
-                break
-    if key & 0xFF == ord('q'):
+    if success:
+        cv2.imshow('frame', frame)
+        key = cv2.waitKey(1)
+    else:
         break
 
 cap.release()
