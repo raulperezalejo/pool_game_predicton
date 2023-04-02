@@ -1,37 +1,10 @@
-import cv2
-import numpy as np
-import cvzone
-import datetime
 from pool_utils import *
-import math
 import time
-
-FIRST_SHOOT = 90
 
 cap = cv2.VideoCapture('video.mp4')
 
-# def empty(a):
-#     pass
-
-# # Trackball to adjuts Canny
-# cv2.namedWindow('Settings')
-# cv2.resizeWindow('Settings', 640, 240)
-# cv2.createTrackbar('Threshold1', 'Settings', 50, 255, empty)
-# cv2.createTrackbar('Threshold2', 'Settings', 50, 255, empty)
-
-
-# # count the number of frames
-# frames = cap.get(cv2.CAP_PROP_FRAME_COUNT)
-# fps = cap.get(cv2.CAP_PROP_FPS)
-#
-# # calculate duration of the video
-# seconds = round(frames / fps)
-# video_time = datetime.timedelta(seconds=seconds)
-#
-# print(f"frames: {frames}")
-# print(f"fps: {fps}")
-# print(f"duration in seconds: {seconds}")
-# print(f"video time: {video_time}")
+# Bottom edge bounce coordinates
+edge_x1, edge_y1, edge_x2, edge_y2 = 270, 800, 1650, 800
 
 
 frame_count = 0
@@ -40,7 +13,7 @@ while cap.isOpened():
     success, frame = cap.read()
 
     # Holes will always be visible
-    for i in holes:
+    for i in HOLES:
         cv2.circle(frame, i, 35, WHITE, cv2.FILLED)
 
     if frame_count == 44:
@@ -48,7 +21,8 @@ while cap.isOpened():
         frame_countours, cnt_found = find_contours(frame, frame_processed, minArea=1000)
 
         # Contour filtering
-        cnt_found = [d for d in cnt_found if 300 < d['bbox'][0] < 600 and d['bbox'][1] < 800]
+        f_x1, f_x2, f_y2 = 300, 600, 800
+        cnt_found = [d for d in cnt_found if f_x1 < d['bbox'][0] < f_x2 and d['bbox'][1] < f_y2]
 
         # Stick
         xs, ys, w, h = cnt_found[0]['bbox']
@@ -68,7 +42,7 @@ while cap.isOpened():
         # Calculating ball trajectory
         x_cb, y_cb = calculate_projection(x_sc, y_sc, xb_center, yb_center, 13000)
 
-        color = text_result(frame, x_cb, y_cb)
+        color = result(frame, x_cb, y_cb)
 
         # Drawing trajectories
         cv2.line(frame, (xc_center, yc_center), (x_sc, y_sc), color, 4)
@@ -87,7 +61,7 @@ while cap.isOpened():
         frame_processed = pre_processing(frame, 96, 75)
         frame_countours, cnt_found = find_contours(frame, frame_processed, minArea=1000)
 
-        edge_x1, edge_y1, edge_x2, edge_y2 = 270, 800, 1650, 800
+        # Bottom edge line
         cv2.line(frame, (edge_x1, edge_y1), (edge_x2, edge_y2), YELLOW, 4)
 
         # Contour filtering
@@ -119,7 +93,7 @@ while cap.isOpened():
         x_i = intersection_point[0] + (700 * math.cos(-angle * PI / 180.0))
         y_i = intersection_point[1] + (700 * math.sin(-angle * PI / 180.0))
 
-        color = text_result(frame, x_i, y_i)
+        color = result(frame, x_i, y_i)
 
         # Drawing trajectories
         cv2.line(frame, (xc_center, yc_center), (x_sc, y_sc), color, 4)
@@ -162,7 +136,7 @@ while cap.isOpened():
         # Calculating ball trajectory
         x_cb, y_cb = calculate_projection(x_sc, y_sc, xb_center, yb_center, 26000)
 
-        color = text_result(frame, x_cb, y_cb)
+        color = result(frame, x_cb, y_cb)
 
         # Drawing trajectories
         cv2.line(frame, (xc_center, yc_center), (x_sc, y_sc), color, 4)
@@ -181,7 +155,7 @@ while cap.isOpened():
         frame_processed = pre_processing(frame, 38, 81)
         frame_countours, cnt_found = find_contours(frame, frame_processed, minArea=500)
 
-        edge_x1, edge_y1, edge_x2, edge_y2 = 270, 800, 1650, 800
+        # Bottom edge line
         cv2.line(frame, (edge_x1, edge_y1), (edge_x2, edge_y2), YELLOW, 4)
 
         # Contour filtering
@@ -213,7 +187,7 @@ while cap.isOpened():
         x_i = intersection_point[0] + (700 * math.cos(-angle * PI / 180.0))
         y_i = intersection_point[1] + (700 * math.sin(-angle * PI / 180.0))
 
-        color = text_result(frame, x_i, y_i)
+        color = result(frame, x_i, y_i)
 
         # Drawing trajectories
         cv2.line(frame, (xc_center, yc_center), (x_sc, y_sc), color, 4)
@@ -256,7 +230,7 @@ while cap.isOpened():
         # Calculating ball trajectory
         x_cb, y_cb = calculate_projection(x_sc, y_sc, xb_center, yb_center, 10000)
 
-        color = text_result(frame, x_cb, y_cb)
+        color = result(frame, x_cb, y_cb)
 
         # Drawing trajectories
         cv2.line(frame, (xc_center, yc_center), (x_sc, y_sc), color, 4)
@@ -296,7 +270,7 @@ while cap.isOpened():
         # Calculating ball trajectory
         x_cb, y_cb = calculate_projection(x_sc, y_sc, xb_center, yb_center, 10000)
 
-        color = text_result(frame, x_cb, y_cb)
+        color = result(frame, x_cb, y_cb)
 
         # Drawing trajectories
         cv2.line(frame, (xc_center, yc_center), (x_sc, y_sc), color, 4)
@@ -337,7 +311,7 @@ while cap.isOpened():
         # Calculating ball trajectory
         x_cb, y_cb = calculate_projection(x_sc, y_sc, xb_center, yb_center, 10000)
 
-        color = text_result(frame, x_cb, y_cb)
+        color = result(frame, x_cb, y_cb)
 
         # Drawing trajectories
         cv2.line(frame, (xc_center, yc_center), (x_sc, y_sc), color, 4)
@@ -356,9 +330,8 @@ while cap.isOpened():
         frame_processed = pre_processing(frame, 88, 132, 5)
         frame_countours, cnt_found = find_contours(frame, frame_processed, minArea=100)
 
-        edge_x1, edge_y1, edge_x2, edge_y2 = 270, 800, 1650, 800
+        # Bottom edge line
         cv2.line(frame, (edge_x1, edge_y1), (edge_x2, edge_y2), YELLOW, 4)
-
 
         # Contour filtering
         f_x1, f_y1, f_x2, f_y2 = 400, 0, 1100, 750
@@ -389,7 +362,7 @@ while cap.isOpened():
         x_i = intersection_point[0] + (800 * math.cos(-angle * PI / 180.0))
         y_i = intersection_point[1] + (800 * math.sin(-angle * PI / 180.0))
 
-        color = text_result(frame, x_i, y_i)
+        color = result(frame, x_i, y_i)
 
         # Drawing trajectories
         cv2.line(frame, (xc_center, yc_center), (x_sc, y_sc), color, 4)
@@ -432,7 +405,7 @@ while cap.isOpened():
         # Calculating ball trajectory
         x_cb, y_cb = calculate_projection(x_sc, y_sc, xb_center, yb_center, 33000)
 
-        color = text_result(frame, x_cb, y_cb)
+        color = result(frame, x_cb, y_cb)
 
         # Drawing trajectories
         cv2.line(frame, (xc_center, yc_center), (x_sc, y_sc), color, 4)
@@ -448,12 +421,13 @@ while cap.isOpened():
     ######################
 
     if frame_count == 1163:
-        edge_x1, edge_y1, edge_x2, edge_y2 = 270, 800, 1650, 800
-        cv2.line(frame, (edge_x1, edge_y1), (edge_x2, edge_y2), YELLOW, 4)
-
         frame_processed = pre_processing(frame, 73, 85, 4)
         frame_countours, cnt_found = find_contours(frame, frame_processed, minArea=500)
 
+        # Bottom edge line
+        cv2.line(frame, (edge_x1, edge_y1), (edge_x2, edge_y2), YELLOW, 4)
+
+        # Contour filtering
         b_x1, b_y1, b_x2, b_y2 = 1200, 0, 1700, 650
         cnt_found = [d for d in cnt_found if b_x1 < d['bbox'][0] < b_x2 and b_y1 < d['bbox'][1] < b_y2]
 
@@ -486,7 +460,7 @@ while cap.isOpened():
         x_i = intersection_point[0] + (700 * math.cos(-angle * PI / 180.0))
         y_i = intersection_point[1] + (700 * math.sin(-angle * PI / 180.0))
 
-        color = text_result(frame, x_i, y_i)
+        color = result(frame, x_i, y_i)
 
         # Drawing trajectories
         cv2.line(frame, (xc_center, yc_center), (x_sc, y_sc), color, 4)
