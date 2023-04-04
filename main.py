@@ -1,5 +1,4 @@
 from pool_utils import *
-import time
 
 cap = cv2.VideoCapture('video.mp4')
 
@@ -44,12 +43,13 @@ while cap.isOpened():
 
         color = result(frame, x_cb, y_cb)
 
-        # Drawing trajectories
-        cv2.line(frame, (xc_center, yc_center), (x_sc, y_sc), color, 4)
-        cv2.circle(frame, (x_sc, y_sc), 25, color, cv2.FILLED)
+        # Draw ghost ball trajectory
+        cv2.line(frame, (xc_center, yc_center), (x_sc, y_sc), color, LINE_THICKNESS)
+        cv2.circle(frame, (x_sc, y_sc), GHOST_SIZE, color, cv2.FILLED)
 
-        cv2.line(frame, (xb_center, yb_center), (x_cb, y_cb), color, 4)
-        cv2.circle(frame, (x_cb, y_cb), 25, color, cv2.FILLED)
+        # Draw ball trajectory
+        cv2.line(frame, (xb_center, yb_center), (x_cb, y_cb), color, LINE_THICKNESS)
+        cv2.circle(frame, (x_cb, y_cb), GHOST_SIZE, color, cv2.FILLED)
 
         cv2.imshow('frame', frame)
 
@@ -86,23 +86,25 @@ while cap.isOpened():
         # Calculating ball trajectory
         x_cb, y_cb = calculate_projection(x_sc, y_sc, xb_center, yb_center, 8000)
 
+        # Calculating intersection point and angle with bottom edge
         intersection_point = line_intersection(((edge_x1, edge_y1), (edge_x2, edge_y2)),
                                                ((xb_center, yb_center), (x_cb, y_cb)))
 
         angle = find_angle(frame, (edge_x1, edge_y1), intersection_point, (xb_center, yb_center))
-        x_i = intersection_point[0] + (700 * math.cos(-angle * PI / 180.0))
-        y_i = intersection_point[1] + (700 * math.sin(-angle * PI / 180.0))
+        x_i = int(intersection_point[0] + (700 * math.cos(-angle * PI / 180.0)))
+        y_i = int(intersection_point[1] + (700 * math.sin(-angle * PI / 180.0)))
 
         color = result(frame, x_i, y_i)
 
-        # Drawing trajectories
-        cv2.line(frame, (xc_center, yc_center), (x_sc, y_sc), color, 4)
-        cv2.circle(frame, (x_sc, y_sc), 25, color, cv2.FILLED)
+        # Draw ghost ball trajectory
+        cv2.line(frame, (xc_center, yc_center), (x_sc, y_sc), color, LINE_THICKNESS)
+        cv2.circle(frame, (x_sc, y_sc), GHOST_SIZE, color, cv2.FILLED)
 
-        cv2.line(frame, (xb_center, yb_center), (x_cb, y_cb), color, 4)
+        # Draw bounce trajectory
+        cv2.line(frame, (xb_center, yb_center), (x_cb, y_cb), color, LINE_THICKNESS)
 
-        cv2.line(frame, (intersection_point[0], intersection_point[1]), (int(x_i), int(y_i)), color, 4)
-        cv2.circle(frame, (int(x_i), int(y_i)), 25, color, cv2.FILLED)
+        cv2.line(frame, (intersection_point[0], intersection_point[1]), (x_i, y_i), color, LINE_THICKNESS)
+        cv2.circle(frame, (x_i, y_i), GHOST_SIZE, color, cv2.FILLED)
 
         cv2.imshow('frame', frame)
 
@@ -138,12 +140,13 @@ while cap.isOpened():
 
         color = result(frame, x_cb, y_cb)
 
-        # Drawing trajectories
-        cv2.line(frame, (xc_center, yc_center), (x_sc, y_sc), color, 4)
-        cv2.circle(frame, (x_sc, y_sc), 25, color, cv2.FILLED)
+        # Draw ghost ball trajectory
+        cv2.line(frame, (xc_center, yc_center), (x_sc, y_sc), color, LINE_THICKNESS)
+        cv2.circle(frame, (x_sc, y_sc), GHOST_SIZE, color, cv2.FILLED)
 
-        cv2.line(frame, (xb_center, yb_center), (x_cb, y_cb), color, 4)
-        cv2.circle(frame, (x_cb, y_cb), 25, color, cv2.FILLED)
+        # Draw ball trajectory
+        cv2.line(frame, (xb_center, yb_center), (x_cb, y_cb), color, LINE_THICKNESS)
+        cv2.circle(frame, (x_cb, y_cb), GHOST_SIZE, color, cv2.FILLED)
 
         cv2.imshow('frame', frame)
 
@@ -189,14 +192,15 @@ while cap.isOpened():
 
         color = result(frame, x_i, y_i)
 
-        # Drawing trajectories
-        cv2.line(frame, (xc_center, yc_center), (x_sc, y_sc), color, 4)
-        cv2.circle(frame, (x_sc, y_sc), 25, color, cv2.FILLED)
+        # Draw ghost ball trajectory
+        cv2.line(frame, (xc_center, yc_center), (x_sc, y_sc), color, LINE_THICKNESS)
+        cv2.circle(frame, (x_sc, y_sc), GHOST_SIZE, color, cv2.FILLED)
 
-        cv2.line(frame, (xb_center, yb_center), (x_cb, y_cb), color, 4)
-        #
-        cv2.line(frame, (intersection_point[0], intersection_point[1]), (int(x_i), int(y_i)), color, 4)
-        cv2.circle(frame, (int(x_i), int(y_i)), 25, color, cv2.FILLED)
+        # Draw bounce trajectory
+        cv2.line(frame, (xb_center, yb_center), (x_cb, y_cb), color, LINE_THICKNESS)
+
+        cv2.line(frame, (intersection_point[0], intersection_point[1]), (int(x_i), int(y_i)), color, LINE_THICKNESS)
+        cv2.circle(frame, (int(x_i), int(y_i)), GHOST_SIZE, color, cv2.FILLED)
 
         cv2.imshow('frame', frame)
 
@@ -232,12 +236,13 @@ while cap.isOpened():
 
         color = result(frame, x_cb, y_cb)
 
-        # Drawing trajectories
-        cv2.line(frame, (xc_center, yc_center), (x_sc, y_sc), color, 4)
-        cv2.circle(frame, (x_sc, y_sc), 25, color, cv2.FILLED)
+        # Draw ghost ball trajectory
+        cv2.line(frame, (xc_center, yc_center), (x_sc, y_sc), color, LINE_THICKNESS)
+        cv2.circle(frame, (x_sc, y_sc), GHOST_SIZE, color, cv2.FILLED)
 
-        cv2.line(frame, (xb_center, yb_center), (x_cb, y_cb), color, 4)
-        cv2.circle(frame, (x_cb, y_cb), 25, color, cv2.FILLED)
+        # Draw ball trajectory
+        cv2.line(frame, (xb_center, yb_center), (x_cb, y_cb), color, LINE_THICKNESS)
+        cv2.circle(frame, (x_cb, y_cb), GHOST_SIZE, color, cv2.FILLED)
 
         cv2.imshow('frame', frame)
 
@@ -272,12 +277,13 @@ while cap.isOpened():
 
         color = result(frame, x_cb, y_cb)
 
-        # Drawing trajectories
-        cv2.line(frame, (xc_center, yc_center), (x_sc, y_sc), color, 4)
-        cv2.circle(frame, (x_sc, y_sc), 25, color, cv2.FILLED)
+        # Draw ghost ball trajectory
+        cv2.line(frame, (xc_center, yc_center), (x_sc, y_sc), color, LINE_THICKNESS)
+        cv2.circle(frame, (x_sc, y_sc), GHOST_SIZE, color, cv2.FILLED)
 
-        cv2.line(frame, (xb_center, yb_center), (x_cb, y_cb), color, 4)
-        cv2.circle(frame, (x_cb, y_cb), 25, color, cv2.FILLED)
+        # Draw ball trajectory
+        cv2.line(frame, (xb_center, yb_center), (x_cb, y_cb), color, LINE_THICKNESS)
+        cv2.circle(frame, (x_cb, y_cb), GHOST_SIZE, color, cv2.FILLED)
 
         cv2.imshow('frame', frame)
 
@@ -313,12 +319,13 @@ while cap.isOpened():
 
         color = result(frame, x_cb, y_cb)
 
-        # Drawing trajectories
-        cv2.line(frame, (xc_center, yc_center), (x_sc, y_sc), color, 4)
-        cv2.circle(frame, (x_sc, y_sc), 25, color, cv2.FILLED)
+        # Draw ghost ball trajectory
+        cv2.line(frame, (xc_center, yc_center), (x_sc, y_sc), color, LINE_THICKNESS)
+        cv2.circle(frame, (x_sc, y_sc), GHOST_SIZE, color, cv2.FILLED)
 
-        cv2.line(frame, (xb_center, yb_center), (x_cb, y_cb), color, 4)
-        cv2.circle(frame, (x_cb, y_cb), 25, color, cv2.FILLED)
+        # Draw ball trajectory
+        cv2.line(frame, (xb_center, yb_center), (x_cb, y_cb), color, LINE_THICKNESS)
+        cv2.circle(frame, (x_cb, y_cb), GHOST_SIZE, color, cv2.FILLED)
 
         cv2.imshow('frame', frame)
 
@@ -364,14 +371,15 @@ while cap.isOpened():
 
         color = result(frame, x_i, y_i)
 
-        # Drawing trajectories
-        cv2.line(frame, (xc_center, yc_center), (x_sc, y_sc), color, 4)
-        cv2.circle(frame, (x_sc, y_sc), 25, color, cv2.FILLED)
+        # Draw ghost ball trajectory
+        cv2.line(frame, (xc_center, yc_center), (x_sc, y_sc), color, LINE_THICKNESS)
+        cv2.circle(frame, (x_sc, y_sc), GHOST_SIZE, color, cv2.FILLED)
 
-        cv2.line(frame, (xb_center, yb_center), (x_cb, y_cb), color, 4)
+        # Draw bounce trajectory
+        cv2.line(frame, (xb_center, yb_center), (x_cb, y_cb), color, LINE_THICKNESS)
 
-        cv2.line(frame, (intersection_point[0], intersection_point[1]), (int(x_i), int(y_i)), color, 4)
-        cv2.circle(frame, (int(x_i), int(y_i)), 25, color, cv2.FILLED)
+        cv2.line(frame, (intersection_point[0], intersection_point[1]), (int(x_i), int(y_i)), color, LINE_THICKNESS)
+        cv2.circle(frame, (int(x_i), int(y_i)), GHOST_SIZE, color, cv2.FILLED)
 
         cv2.imshow('frame', frame)
 
@@ -407,12 +415,13 @@ while cap.isOpened():
 
         color = result(frame, x_cb, y_cb)
 
-        # Drawing trajectories
-        cv2.line(frame, (xc_center, yc_center), (x_sc, y_sc), color, 4)
-        cv2.circle(frame, (x_sc, y_sc), 25, color, cv2.FILLED)
+        # Draw ghost ball trajectory
+        cv2.line(frame, (xc_center, yc_center), (x_sc, y_sc), color, LINE_THICKNESS)
+        cv2.circle(frame, (x_sc, y_sc), GHOST_SIZE, color, cv2.FILLED)
 
-        cv2.line(frame, (xb_center, yb_center), (x_cb, y_cb), color, 4)
-        cv2.circle(frame, (x_cb, y_cb), 25, color, cv2.FILLED)
+        # Draw ball trajectory
+        cv2.line(frame, (xb_center, yb_center), (x_cb, y_cb), color, LINE_THICKNESS)
+        cv2.circle(frame, (x_cb, y_cb), GHOST_SIZE, color, cv2.FILLED)
 
         cv2.imshow('frame', frame)
 
@@ -443,7 +452,7 @@ while cap.isOpened():
         xb, yb, wb, hb = cnt_found[8]['bbox']
         xb_center, yb_center = xb + (wb // 2), yb + (hb // 2)
 
-        # In this particular case the ball was not hit in the middle
+        # In this particular case the ball is not hit in the middle
         # For this reason, this Offset in added.
         OFFSET = 20
 
@@ -462,14 +471,15 @@ while cap.isOpened():
 
         color = result(frame, x_i, y_i)
 
-        # Drawing trajectories
-        cv2.line(frame, (xc_center, yc_center), (x_sc, y_sc), color, 4)
-        cv2.circle(frame, (x_sc, y_sc), 25, color, cv2.FILLED)
+        # Draw ghost ball trajectory
+        cv2.line(frame, (xc_center, yc_center), (x_sc, y_sc), color, LINE_THICKNESS)
+        cv2.circle(frame, (x_sc, y_sc), GHOST_SIZE, color, cv2.FILLED)
 
-        cv2.line(frame, (xb_center, yb_center), (x_cb, y_cb), color, 4)
-        #
-        cv2.line(frame, (intersection_point[0], intersection_point[1]), (int(x_i), int(y_i)), color, 4)
-        cv2.circle(frame, (int(x_i), int(y_i)), 25, color, cv2.FILLED)
+        # Draw bounce trajectory
+        cv2.line(frame, (xb_center, yb_center), (x_cb, y_cb), color, LINE_THICKNESS)
+
+        cv2.line(frame, (intersection_point[0], intersection_point[1]), (int(x_i), int(y_i)), color, LINE_THICKNESS)
+        cv2.circle(frame, (int(x_i), int(y_i)), GHOST_SIZE, color, cv2.FILLED)
 
         cv2.imshow('frame', frame)
 
